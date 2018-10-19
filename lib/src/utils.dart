@@ -208,8 +208,6 @@ Shader createGradientShader(GradientColor gradient, GradientType type,
 
 Shader _createLinearGradientShader(GradientColor gradient, double x0, double y0,
     double x1, double y1) {
-  print('x0: $x0, y0: $y0, x1: $x1, y1: $y1');
-
   return new ui.Gradient.linear(
     Offset(x0, y0),
     Offset(x1, y1),
@@ -221,8 +219,6 @@ Shader _createLinearGradientShader(GradientColor gradient, double x0, double y0,
 Shader _createRadialGradientShader(GradientColor gradient, double x0, double y0,
     double x1, double y1) {
   final double radius = sqrt(pow(x1 - x0, 2) + pow(y1 - y0, 2));
-
-  // print('x0: $x0, y0: $y0, x1: $x1, y1: $y1, radius: $radius');
 
   return new ui.Gradient.radial(
     Offset(x0, y0),
