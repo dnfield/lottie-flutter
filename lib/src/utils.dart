@@ -195,20 +195,20 @@ int _floorDiv(int x, int y) {
 }
 
 Shader createGradientShader(GradientColor gradient, GradientType type,
-    Offset startPoint, Offset endPoint, Rect bounds) {
-  final double x0 = bounds.left + bounds.width / 2 + startPoint.dx;
-  final double y0 = bounds.top + bounds.height / 2 + startPoint.dy;
-  final double x1 = bounds.left + bounds.width / 2 + endPoint.dx;
-  final double y1 = bounds.top + bounds.height / 2 + endPoint.dy;
+    Offset startPoint, Offset endPoint) {
+  final double x0 = startPoint.dx;
+  final double y0 = startPoint.dy;
+  final double x1 = endPoint.dx;
+  final double y1 = endPoint.dy;
 
   return type == GradientType.Linear
-      ? _createLinearGradientShader(gradient, x0, y0, x1, y1, bounds)
-      : _createRadialGradientShader(gradient, x0, y0, x1, y1, bounds);
+      ? _createLinearGradientShader(gradient, x0, y0, x1, y1)
+      : _createRadialGradientShader(gradient, x0, y0, x1, y1);
 }
 
 Shader _createLinearGradientShader(GradientColor gradient, double x0, double y0,
-    double x1, double y1, Rect bounds) {
-  // print('x0: $x0, y0: $y0, x1: $x1, y1: $y1');
+    double x1, double y1) {
+  print('x0: $x0, y0: $y0, x1: $x1, y1: $y1');
 
   return new ui.Gradient.linear(
     Offset(x0, y0),
@@ -219,7 +219,7 @@ Shader _createLinearGradientShader(GradientColor gradient, double x0, double y0,
 }
 
 Shader _createRadialGradientShader(GradientColor gradient, double x0, double y0,
-    double x1, double y1, Rect bounds) {
+    double x1, double y1) {
   final double radius = sqrt(pow(x1 - x0, 2) + pow(y1 - y0, 2));
 
   // print('x0: $x0, y0: $y0, x1: $x1, y1: $y1, radius: $radius');
@@ -230,4 +230,11 @@ Shader _createRadialGradientShader(GradientColor gradient, double x0, double y0,
     gradient.colors,
     gradient.positions,
   );
+}
+
+Offset applyMatrixToOffset(Matrix4 matrix, Offset offset) {
+  final Vector3 vector = new Vector3(offset.dx, offset.dy, 0.0);
+  vector.applyMatrix4(matrix);
+
+  return new Offset(vector.x, vector.y);
 }

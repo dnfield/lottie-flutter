@@ -104,7 +104,7 @@ class StrokeDrawable extends AnimationDrawable {
   void draw(Canvas canvas, Size size, Matrix4 parentMatrix, int parentAlpha) {
     // scaling is handled differently, for better or worse
     final double strokeWidth =
-        _widthAnimation.value * parentMatrix.entry(0, 0).abs();
+        _widthAnimation.value * parentMatrix.getMaxScaleOnAxis();
     if (strokeWidth <= 0) {
       return;
     }
@@ -328,9 +328,12 @@ class GradientStrokeDrawable extends StrokeDrawable {
 
   @override
   void draw(Canvas canvas, Size size, Matrix4 parentMatrix, int parentAlpha) {
-    final Rect bounds = getBounds(parentMatrix);
-    _paint.shader = createGradientShader(_colorAnimation.value, _type,
-        _startPointAnimation.value, _endPointAnimation.value, bounds);
+    _paint.shader = createGradientShader(
+        _colorAnimation.value,
+        _type,
+        applyMatrixToOffset(parentMatrix, _startPointAnimation.value),
+        applyMatrixToOffset(parentMatrix, _endPointAnimation.value),
+    );
 
     super.draw(canvas, size, parentMatrix, parentAlpha);
   }

@@ -105,15 +105,13 @@ class GradientFillDrawable extends FillDrawable {
     final Path path = _createPathFromSection(parentMatrix);
     path.fillType = _fillType;
 
-    final Rect bounds = path.getBounds();
-
     _paint
       ..shader = createGradientShader(
           _gradientColorAnimation.value,
           _gradientType,
-          _startPointAnimation.value,
-          _endPointAnimation.value,
-          bounds)
+          applyMatrixToOffset(parentMatrix, _startPointAnimation.value),
+          applyMatrixToOffset(parentMatrix, _endPointAnimation.value),
+      )
       ..color = _paint.color
           .withAlpha(calculateAlpha(parentAlpha, _opacityAnimation));
 
