@@ -34,6 +34,7 @@ class Lottie extends StatefulWidget {
 class _LottieState extends State<Lottie> with SingleTickerProviderStateMixin {
   CompositionLayer _compositionLayer;
   AnimationController _animation;
+  bool _shouldDisposeAnimation;
   double _scale;
 
   @override
@@ -46,6 +47,8 @@ class _LottieState extends State<Lottie> with SingleTickerProviderStateMixin {
       widget._controller.duration =
           new Duration(milliseconds: widget._composition.duration);
     }
+
+    _shouldDisposeAnimation = widget._controller == null;
 
     _animation = widget._controller ??
         (new AnimationController(
@@ -118,7 +121,11 @@ class _LottieState extends State<Lottie> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     _animation.removeListener(_handleChange);
-    _animation.dispose();
+
+    if (_shouldDisposeAnimation) {
+      _animation.dispose();
+    }
+
     super.dispose();
   }
 }
