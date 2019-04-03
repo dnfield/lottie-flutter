@@ -361,8 +361,12 @@ class SolidLayer extends BaseLayer {
   }
 
   @override
-  Rect calculateBounds(Matrix4 parentMatrix) {
-    return calculateBounds(parentMatrix);
+  Rect calculateBounds(Matrix4 parentMatrix) {    
+    final Rect canvasBounds = new Rect.fromLTRB(0.0, 0.0,
+        _layerModel.solidWidth.toDouble(), _layerModel.solidHeight.toDouble());
+    final Rect transformRect =
+        MatrixUtils.transformRect(parentMatrix, canvasBounds);
+    return transformRect;
   }
 
   @override
