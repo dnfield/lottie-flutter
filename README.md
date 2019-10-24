@@ -11,7 +11,7 @@ Lottie is a mobile library that parses [Adobe After Effects](http://www.adobe.co
 
 ## Current status
 
-Achived rednering parity with lottie-android except for dash paths.
+Achived rendering parity with lottie-android except for dash paths.
 
 All samples included render.  Motorcycle has some issues still, but also has issues on lottie-android (due to using effects that aren't supported).
 
