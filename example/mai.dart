@@ -89,7 +89,7 @@ class _LottieDemoState extends State<LottieDemo>
     super.initState();
 
     _repeat = false;
-    _loadButtonPressed(assetNames.last);
+    _loadButtonPressed(assetNames.first);
     _controller = AnimationController(
       duration: const Duration(milliseconds: 1),
       vsync: this,
@@ -103,19 +103,18 @@ class _LottieDemoState extends State<LottieDemo>
         _assetName = assetName;
         _composition = composition;
         _controller.reset();
+        // if (_controller.status == AnimationStatus.dismissed ||
+        //     _controller.status == AnimationStatus.completed) {
+        //   _controller.forward();
+        // }
+        //if (from == 'drag') {
         _controller.forward();
-        if (from == 'dragLeft') {
-          print(from + ' : ' + _controller.duration.toString());
-          _controller.reset();
-          _controller.forward();
-        } else {
-          print(_controller.duration);
-        }
-        //print(_controller.velocity); //TODO Velocity is reducing when dragging right to left ?
+        print(_controller
+            .velocity); //TODO Velocity is reducing when dragging right to left ?
+        //}
         if (_controller.isAnimating) {
           if (_repeat) {
-            _controller.repeat();
-            // _controller.forward().then<Null>((nulle) => _controller.repeat());
+            _controller.forward().then<Null>((nulle) => _controller.repeat());
           } else {
             _controller.forward();
           }
@@ -160,18 +159,16 @@ class _LottieDemoState extends State<LottieDemo>
                   //print(change);
                   final int i = assetNames.indexOf(dropDown.value);
                   if (change > 0) {
+                    _controller.stop();
                     if (i - 1 > -1) {
-                      _controller.stop();
-                      _composition = null;
-                      _loadButtonPressed(assetNames[i - 1], from: 'dragRight');
+                      _loadButtonPressed(assetNames[i - 1], from: 'drag');
                     } else {
                       print('first Item');
                     }
                   } else {
+                    _controller.stop();
                     if (i + 1 < assetNames.length) {
-                      _controller.stop();
-                      _composition = null;
-                      _loadButtonPressed(assetNames[i + 1], from: 'dragLeft');
+                      _loadButtonPressed(assetNames[i + 1], from: 'drag');
                     } else {
                       print('last Item');
                     }
@@ -192,70 +189,58 @@ class _LottieDemoState extends State<LottieDemo>
                     : null,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  IconButton(
-                    icon: const Icon(Icons.repeat),
-                    color: _repeat ? Colors.black : Colors.black45,
-                    onPressed: () => setState(() {
-                          _repeat = !_repeat;
-                          if (_controller.isAnimating) {
-                            if (_repeat) {
-                              _controller
-                                  .forward()
-                                  .then<Null>((nulle) => _controller.repeat());
-                            } else {
-                              _controller.forward();
-                            }
-                          }
-                        }),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.fast_rewind),
-                    onPressed: _controller.value > 0 && _composition != null
-                        ? () => setState(() => _controller.reset())
-                        : null,
-                  ),
-                  IconButton(
-                    icon: _controller.isAnimating
-                        ? const Icon(Icons.pause)
-                        : const Icon(Icons.play_arrow),
-                    onPressed: _controller.isCompleted || _composition == null
-                        ? null
-                        : () {
-                            setState(() {
-                              if (_controller.isAnimating) {
-                                _controller.stop();
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    IconButton(
+                      icon: const Icon(Icons.repeat),
+                      color: _repeat ? Colors.black : Colors.black45,
+                      onPressed: () => setState(() {
+                            _repeat = !_repeat;
+                            if (_controller.isAnimating) {
+                              if (_repeat) {
+                                _controller.forward().then<Null>(
+                                    (nulle) => _controller.repeat());
                               } else {
-                                if (_repeat) {
-                                  _controller.repeat();
-                                } else {
-                                  _controller.forward();
-                                }
+                                _controller.forward();
                               }
-                            });
-                          },
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.stop),
-                    onPressed: _controller.isAnimating && _composition != null
-                        ? () {
-                            _controller.reset();
-                          }
-                        : null,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.undo),
-                    onPressed: _controller.isAnimating && _composition != null
-                        ? () {
-                            _controller.reverse();
-                          }
-                        : () {
-                            _controller.reverse();
-                          },
-                  )
-                ],
-              ),
+                            }
+                          }),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.fast_rewind),
+                      onPressed: _controller.value > 0 && _composition != null
+                          ? () => setState(() => _controller.reset())
+                          : null,
+                    ),
+                    IconButton(
+                      icon: _controller.isAnimating
+                          ? const Icon(Icons.pause)
+                          : const Icon(Icons.play_arrow),
+                      onPressed: _controller.isCompleted || _composition == null
+                          ? null
+                          : () {
+                              setState(() {
+                                if (_controller.isAnimating) {
+                                  _controller.stop();
+                                } else {
+                                  if (_repeat) {
+                                    _controller.repeat();
+                                  } else {
+                                    _controller.forward();
+                                  }
+                                }
+                              });
+                            },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.stop),
+                      onPressed: _controller.isAnimating && _composition != null
+                          ? () {
+                              _controller.reset();
+                            }
+                          : null,
+                    ),
+                  ]),
             ],
           ),
         ),
